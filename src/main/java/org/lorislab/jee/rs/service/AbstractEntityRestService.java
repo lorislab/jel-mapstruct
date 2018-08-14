@@ -5,10 +5,9 @@ import java.util.Map;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import org.lorislab.jee.exception.ServiceException;
-import org.lorislab.jee.jpa.model.Persistent;
+import org.lorislab.jee.jpa.model.AbstractPersistent;
 import org.lorislab.jee.jpa.service.AbstractEntityService;
 import org.lorislab.jee.rs.mapper.AbstractEntityMapper;
-import org.lorislab.jee.rs.service.EntityRestService;
 
 
 /**
@@ -16,25 +15,26 @@ import org.lorislab.jee.rs.service.EntityRestService;
  *
  * @param <ENTITY> the entity model type.
  * @param <DTO> the DTO model type.
+ * @param <K> t he key type.
  * 
  * @author Andrej Petras
  */
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> implements EntityRestService<DTO> {
+public abstract class AbstractEntityRestService<ENTITY extends AbstractPersistent<K>, DTO, K> implements EntityRestService<DTO, K> {
 
     /**
      * Gets the entity mapper.
      *
      * @return the entity mapper.
      */
-    protected abstract AbstractEntityMapper<ENTITY, DTO> getMapper();
+    protected abstract AbstractEntityMapper<ENTITY, DTO, K> getMapper();
 
     /**
      * Gets the entity service.
      *
      * @return the entity service.
      */
-    protected abstract AbstractEntityService<ENTITY> getService();
+    protected abstract AbstractEntityService<ENTITY, K> getService();
 
     /**
      * {@inheritDoc }
@@ -49,7 +49,7 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      * {@inheritDoc }
      */
     @Override
-    public DTO findByGuid(String guid) throws ServiceException {
+    public DTO findByGuid(K guid) throws ServiceException {
         ENTITY tmp = getService().findByGuid(guid);
         return getMapper().find(tmp);
     }
@@ -59,8 +59,8 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<DTO> findByGuids(List<String> guids) throws ServiceException {
-        List<ENTITY> tmp = getService().findByGuids((List)guids);
+    public List<DTO> findByGuids(List<K> guids) throws ServiceException {
+        List<ENTITY> tmp = getService().findByGuids(guids);
         return getMapper().finds(tmp);
     }
 
@@ -69,8 +69,8 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, DTO> findByGuidsMap(List<String> guids) throws ServiceException {
-        Map<String, ENTITY> tmp = getService().findByGuidsMap((List)guids);
+    public Map<K, DTO> findByGuidsMap(List<K> guids) throws ServiceException {
+        Map<K, ENTITY> tmp = getService().findByGuidsMap(guids);
         return getMapper().findsMap(tmp);
     }
             
@@ -78,7 +78,7 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      * {@inheritDoc }
      */
     @Override
-    public DTO update(String guid, DTO object) throws ServiceException {
+    public DTO update(K guid, DTO object) throws ServiceException {
         ENTITY conf = getService().loadByGuid(guid);
         getMapper().update(conf, object);
         conf = getService().update(conf);
@@ -107,7 +107,7 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      * {@inheritDoc }
      */
     @Override
-    public boolean deleteByGuid(String guid) throws ServiceException {
+    public boolean deleteByGuid(K guid) throws ServiceException {
         return getService().deleteByGuid(guid);
     }
 
@@ -116,8 +116,8 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int deleteByGuids(List<String> guids) throws ServiceException {
-        return getService().deleteByGuids((List) guids);
+    public int deleteByGuids(List<K> guids) throws ServiceException {
+        return getService().deleteByGuids(guids);
     }
 
     /**
@@ -133,7 +133,7 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      * {@inheritDoc }
      */
     @Override
-    public DTO loadByGuid(String guid) throws ServiceException {
+    public DTO loadByGuid(K guid) throws ServiceException {
         ENTITY tmp = getService().loadByGuid(guid);
         return getMapper().load(tmp);
     }
@@ -143,8 +143,8 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<DTO> loadByGuids(List<String> guids) throws ServiceException {
-        List<ENTITY> tmp = getService().loadByGuids((List) guids);
+    public List<DTO> loadByGuids(List<K> guids) throws ServiceException {
+        List<ENTITY> tmp = getService().loadByGuids(guids);
         return getMapper().loads(tmp);
     }
     
@@ -153,8 +153,8 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, DTO> loadByGuidsMap(List<String> guids) throws ServiceException {
-        Map<String, ENTITY> tmp = getService().loadByGuidsMap((List)guids);
+    public Map<K, DTO> loadByGuidsMap(List<K> guids) throws ServiceException {
+        Map<K, ENTITY> tmp = getService().loadByGuidsMap(guids);
         return getMapper().findsMap(tmp);
     }
     
@@ -170,7 +170,7 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      * {@inheritDoc }
      */
     @Override
-    public boolean deleteQueryByGuid(String guid) throws ServiceException {
+    public boolean deleteQueryByGuid(K guid) throws ServiceException {
         return getService().deleteQueryByGuid(guid);
     }
 
@@ -179,7 +179,7 @@ public abstract class AbstractEntityRestService<ENTITY extends Persistent, DTO> 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int deleteQueryByGuids(List<String> guids) throws ServiceException {
+    public int deleteQueryByGuids(List<K> guids) throws ServiceException {
         return getService().deleteQueryByGuids((List)guids);
     }
    

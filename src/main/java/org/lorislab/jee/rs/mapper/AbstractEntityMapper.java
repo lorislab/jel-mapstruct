@@ -23,7 +23,7 @@ package org.lorislab.jee.rs.mapper;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.lorislab.jee.jpa.model.Persistent;
+import org.lorislab.jee.jpa.model.AbstractPersistent;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.MapMapping;
 import org.mapstruct.Mapping;
@@ -34,10 +34,11 @@ import org.mapstruct.MappingTarget;
  *
  * @param <ENTITY> the entity model type.
  * @param <DTO> the DTO model type.
- *
+ * @param <K> the key type.
+ * 
  * @author Andrej Petras
  */
-public interface AbstractEntityMapper<ENTITY extends Persistent, DTO> {
+public interface AbstractEntityMapper<ENTITY extends AbstractPersistent<K>, DTO, K> {
 
     /**
      * Creates the entity from the DTO.
@@ -45,9 +46,9 @@ public interface AbstractEntityMapper<ENTITY extends Persistent, DTO> {
      * @param dto the DTO object.
      * @return the corresponding entity object.
      */
-    @Mapping(target = "guid", ignore = true)    
+    @Mapping(target = "guid", ignore = true)
     @Mapping(target = "version", ignore = true, defaultValue = "0")
-    @Mapping(target = "persisted", ignore = true)    
+    @Mapping(target = "persisted", ignore = true)
     public ENTITY create(DTO dto);
 
     /**
@@ -57,7 +58,7 @@ public interface AbstractEntityMapper<ENTITY extends Persistent, DTO> {
      * @param dto the DTO object.
      */
     @Mapping(target = "guid", ignore = true)
-    @Mapping(target = "version", ignore = true)    
+    @Mapping(target = "version", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     public void update(@MappingTarget ENTITY model, DTO dto);
 
@@ -95,7 +96,7 @@ public interface AbstractEntityMapper<ENTITY extends Persistent, DTO> {
     @FullMapping
     @IterableMapping(qualifiedBy = {FullMapping.class})
     public List<DTO> loads(List<ENTITY> data);
-    
+
     /**
      * The mapping method for the load list of entities.
      *
@@ -105,14 +106,14 @@ public interface AbstractEntityMapper<ENTITY extends Persistent, DTO> {
     @FullMapping
     @IterableMapping(qualifiedBy = {FullMapping.class})
     public Set<DTO> loads(Set<ENTITY> data);
-    
+
     /**
      * The mapping method for find by GUID and return map.
      *
      * @param data the map of entities.
      * @return the corresponding map.
      */
-    public Map<String, DTO> findsMap(Map<String, ENTITY> data);
+    public Map<K, DTO> findsMap(Map<K, ENTITY> data);
 
     /**
      * The mapping method for load by GUID and return map.
@@ -122,6 +123,6 @@ public interface AbstractEntityMapper<ENTITY extends Persistent, DTO> {
      */
     @FullMapping
     @MapMapping(valueQualifiedBy = {FullMapping.class})
-    public Map<String, DTO> loadsMap(Map<String, ENTITY> data);
+    public Map<K, DTO> loadsMap(Map<K, ENTITY> data);
 
 }
