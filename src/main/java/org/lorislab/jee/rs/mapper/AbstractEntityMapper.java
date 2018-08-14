@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.lorislab.jee.jpa.model.AbstractPersistent;
+import org.lorislab.jee.rs.model.AbstractPersistentDTO;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.MapMapping;
 import org.mapstruct.Mapping;
@@ -38,7 +39,7 @@ import org.mapstruct.MappingTarget;
  * 
  * @author Andrej Petras
  */
-public interface AbstractEntityMapper<ENTITY extends AbstractPersistent<K>, DTO, K> {
+public interface AbstractEntityMapper<ENTITY extends AbstractPersistent<K>, DTO extends AbstractPersistentDTO<K>, K> {
 
     /**
      * Creates the entity from the DTO.

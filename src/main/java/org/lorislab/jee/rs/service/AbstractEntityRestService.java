@@ -8,6 +8,7 @@ import org.lorislab.jee.exception.ServiceException;
 import org.lorislab.jee.jpa.model.AbstractPersistent;
 import org.lorislab.jee.jpa.service.AbstractEntityService;
 import org.lorislab.jee.rs.mapper.AbstractEntityMapper;
+import org.lorislab.jee.rs.model.AbstractPersistentDTO;
 
 
 /**
@@ -20,7 +21,7 @@ import org.lorislab.jee.rs.mapper.AbstractEntityMapper;
  * @author Andrej Petras
  */
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public abstract class AbstractEntityRestService<ENTITY extends AbstractPersistent<K>, DTO, K> implements EntityRestService<DTO, K> {
+public abstract class AbstractEntityRestService<ENTITY extends AbstractPersistent<K>, DTO extends AbstractPersistentDTO<K>, K> implements EntityRestService<DTO, K> {
 
     /**
      * Gets the entity mapper.
