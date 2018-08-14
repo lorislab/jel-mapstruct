@@ -2,9 +2,18 @@ language: java
 
 jdk:
   - oraclejdk8
-  
+
+env:
+  global:
+  - secure: "Hch5fd2BdzfBoBl9+QFuHBVrpNksQ3ge4dfXM8r0oMu7guKgwgAxa/8FUkSaPKEnryA99LzzPFxtv4/uIVKlpY0wv4ySF4sbo+TTxtOMmLTDp0K11J4wSS7/23KFLFnKs7LyX6Y9O8Fjy8dmuHmzM+psmynIjb/O/OBQo+OObqFQ8JtNpZjtFGQ4YL03F4ocWzhOHTpdSUfTiTxlmnoOq0g+CXkUKpeqkWI33t7IKzC1Q9dI4CM+xCVnuRoKlTVbp1oG7CTuOPC8nB+Ca7niQYfVqM8zKuTCehBLj9yI04kKIJx7a6vM0R1TNT1l2oYYPigP7ZrKTp4GLm/PdOsJSh77vbG8ezmIUmEl3tH3K0+1aaitVJ5FLEOH7d5Al7GmP6TmgX0OX+B0p/jtzBxRe2qAEXdUBNOPSpjuxgH6C4Ku+FUSsV0sH1JbeicY7tv+5nFRlaAOapxWFo3dfqu64GOLlz87aTDkkPeUcqYZR6vkr5lZ9Mkna44A2fbOYhCZSwhl+US5EbbS7EjeB4XAoSQl5ux6U1JtwlcVP31yXHZmC5btMFyU21ENdGzv9LKH9EEgjIPgAMgfBdxJ1uAVFjLZTVYCjHnTt3X2kQHk+2KUy18Uj8GyuSEdHXn7EOTo2P7c6csndPywfRKSdQPb6OnkQmgPtUCgqp2t7iOIxQo="
+
+
 cache:
   directories:
   - $HOME/.m2
   
-install: mvn clean install
+install: 
+  - mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+  
+after_success:
+  - mvn test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN
